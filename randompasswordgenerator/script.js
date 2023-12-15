@@ -1,75 +1,135 @@
-const lengthSlider = document.querySelector(".pass-length input"),
-options = document.querySelectorAll(".option input"),
-copyIcon = document.querySelector(".input-box span"),
-passwordInput = document.querySelector(".input-box input"),
-passIndicator = document.querySelector(".pass-indicator"),
-generateBtn = document.querySelector(".generate-btn");
-
-const characters = { // object of letters, numbers & symbols
-    lowercase: "abcdefghijklmnopqrstuvwxyz",
-    uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-    numbers: "0123456789",
-    symbols: "^!$%&|[](){}:;.,*+-#@<>~"
+/* Import Google font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
-
-const generatePassword = () => {
-    let staticPassword = "",
-    randomPassword = "",
-    excludeDuplicate = false,
-    passLength = lengthSlider.value;
-
-    options.forEach(option => { // looping through each option's checkbox
-        if(option.checked) { // if checkbox is checked
-            // if checkbox id isn't exc-duplicate && spaces
-            if(option.id !== "exc-duplicate" && option.id !== "spaces") {
-                // adding particular key value from character object to staticPassword
-                staticPassword += characters[option.id];
-            } else if(option.id === "spaces") { // if checkbox id is spaces
-                staticPassword += `  ${staticPassword}  `; // adding space at the beginning & end of staticPassword
-            } else { // else pass true value to excludeDuplicate
-                excludeDuplicate = true;
-            }
-        }
-    });
-
-    for (let i = 0; i < passLength; i++) {
-        // getting random character from the static password
-        let randomChar = staticPassword[Math.floor(Math.random() * staticPassword.length)];
-        if(excludeDuplicate) { // if excludeDuplicate is true
-            // if randomPassword doesn't contains the current random character or randomChar is equal 
-            // to space " " then add random character to randomPassword else decrement i by -1
-            !randomPassword.includes(randomChar) || randomChar == " " ? randomPassword += randomChar : i--;
-        } else { // else add random character to randomPassword
-            randomPassword += randomChar;
-        }
-    }
-    passwordInput.value = randomPassword; // passing randomPassword to passwordInput value
+body{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #74cdf7;
 }
-
-const upadatePassIndicator = () => {
-    // if lengthSlider value is less than 8 then pass "weak" as passIndicator id else if lengthSlider 
-    // value is less than 16 then pass "medium" as id else pass "strong" as id
-    passIndicator.id = lengthSlider.value <= 8 ? "weak" : lengthSlider.value <= 16 ? "medium" : "strong";
+.container{
+  width: 450px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
-
-const updateSlider = () => {
-    // passing slider value as counter text
-    document.querySelector(".pass-length span").innerText = lengthSlider.value;
-    generatePassword();
-    upadatePassIndicator();
+.container h2{
+  font-weight: 600;
+  font-size: 1.31rem;
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid #d4dbe5;
 }
-updateSlider();
-
-const copyPassword = () => {
-    navigator.clipboard.writeText(passwordInput.value); // copying random password
-    copyIcon.innerText = "check"; // changing copy icon to tick
-    copyIcon.style.color = "#4285F4";
-    setTimeout(() => { // after 1500 ms, changing tick icon back to copy
-        copyIcon.innerText = "copy_all";
-        copyIcon.style.color = "#707070";
-    }, 1500);
+.wrapper{
+  margin: 1.25rem 1.75rem;
 }
-
-copyIcon.addEventListener("click", copyPassword);
-lengthSlider.addEventListener("input", updateSlider);
-generateBtn.addEventListener("click", generatePassword);
+.wrapper .input-box{
+  position: relative;
+}
+.input-box input{
+  width: 100%;
+  height: 53px;
+  color: #000;
+  background: none;
+  font-size: 1.06rem;
+  font-weight: 500;
+  border-radius: 4px;
+  letter-spacing: 1.4px;
+  border: 1px solid #aaa;
+  padding: 0 2.85rem 0 1rem;
+}
+.input-box span{
+  position: absolute;
+  right: 13px;
+  cursor: pointer;
+  line-height: 53px;
+  color: #707070;
+}
+.input-box span:hover{
+  color: #4285F4!important;
+}
+.wrapper .pass-indicator{
+  width: 100%;
+  height: 4px;
+  position: relative;
+  background: #dfdfdf;
+  margin-top: 0.75rem;
+  border-radius: 25px;
+}
+.pass-indicator::before{
+  position: absolute;
+  content: "";
+  height: 100%;
+  width: 50%;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+.pass-indicator#weak::before{
+  width: 20%;
+  background: #E64A4A;
+}
+.pass-indicator#medium::before{
+  width: 50%;
+  background: #f1c80b;
+}
+.pass-indicator#strong::before{
+  width: 100%;
+  background: #4285F4;
+}
+.wrapper .pass-length{
+  margin: 1.56rem 0 1.25rem;
+}
+.pass-length .details{
+  display: flex;
+  justify-content: space-between;
+}
+.pass-length input{
+  width: 100%;
+  height: 5px;
+}
+.pass-settings .options{
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.pass-settings .options .option{
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: calc(100% / 2);
+}
+.options .option:first-child{
+  pointer-events: none;
+}
+.options .option:first-child input{
+  opacity: 0.7;
+}
+.options .option input{
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+}
+.options .option label{
+  cursor: pointer;
+  color: #4f4f4f;
+  padding-left: 0.63rem;
+}
+.wrapper .generate-btn{
+  width: 100%;
+  color: #fff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: #4285F4;
+  font-size: 1.06rem;
+  padding: 0.94rem 0;
+  border-radius: 5px;
+  text-transform: uppercase;
+  margin: 0.94rem 0 1.3rem;
+}
